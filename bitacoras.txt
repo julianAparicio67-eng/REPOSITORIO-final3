@@ -1,3 +1,37 @@
+P0 (Momento 0)
+Cliente: Quien hace la petición (el navegador, Postman o una aplicación).
+Servidor: Quien recibe la petición, procesa los datos y devuelve una respuesta.
+Entrada (Request): Viaja el método HTTP ( GET, POST), la URL, los encabezados y 
+opcionalmente un cuerpo con datos.
+Salida (Response): Viaja el código de estado ( 200, 404, etc.), los encabezados y 
+el cuerpo de la respuesta (texto, JSON o HTML).
+
+
+Momento 1: Servidor nativo
+
+P1: En /responde "Hola desde el servidor" , en /holay /lo-que-searesponde
+"Ruta no encontrada" (404) porque no están programadas en las condicionales.
+
+
+P2: Al abrir una sola página en el navegador, en la terminal aparecen dos líneas 
+o más de "Llegó una petición". Esto pasa porque el navegador hace una petición automática 
+para la página y otra para el ícono ( /favicon.ico).
+
+
+P3: Si pides /actividades/(con slash al final) o /ACTIVIDADES(en mayúsculas), el 
+servidor responde un 404 Ruta no encontrada . Esto ocurre porque las cadenas en Node.js 
+son estrictas y no coinciden exactamente con la ruta /actividades.
+
+
+Reflexión (Tres cosas tediosas de hacerlo a mano):
+Hay que configurar manualmente los encabezados ( res.setHeader) para enviar JSON.
+Hay que convertir los objetos a texto plano usando JSON.stringify().
+Hay que manejar los códigos de estado ( res.statusCode = 404) y las rutas con largos 
+bloques de if/elseforma manual.
+
+
+
+
 Momento 2 · El mismo servidor con Express
 
 Predicción P4 — escríbela en tu bitácora ANTES de ejecutar
@@ -59,7 +93,69 @@ y lo que aparece en la terminal es:
 4.2 Filtrar: req.query
 
 Predicción P8 — escríbela en tu bitácora ANTES de ejecutar
-Predice el resultado de estas tres peticiones: ?tipo=agua, ?tipo=AGUA y ?tipo=fuego. Para la
-última: ¿debería responder 404 o 200 con una lista vacía? Defiende tu respuesta.
+Predice el resultado de estas tres peticiones: ?tipo=agua, ?tipo=AGUA y ?tipo=fuego. 
+Para la última: ¿debería responder 404 o 200 con una lista vacía? Defiende tu respuesta.
 
 RTA:
+?tipo=agua: Devuelve un código 200 con la lista de las actividades de agua (como
+rafting y torrentismo).
+
+?tipo=AGUA: Devuelve un código 200 pero con una lista vacía ( []) , porque JavaScript es 
+estricto con las mayúsculas y minúsculas ("AGUA" no es igual a "agua").
+
+?tipo=fuego: Devuelve un código 200 con una lista vacía ( []) .
+
+¿Debería ser 404 o lista vacía? 
+Debe responder 200 con una lista vacía , porque la ruta /actividadessí existe y la búsqueda
+es válida. Que no haya resultados para "fuego" no es un error del sistema, simplemente 
+significa que la tienda no tiene actividades de ese tipo por ahora.
+
+
+
+Momento 5 · Recibir datos: POST y req.body
+
+Predicción P9 — escríbela en tu bitácora ANTES de ejecutar
+¿Qué código de estado y qué body vas a recibir? ¿Qué va a imprimir console.log('Body
+recibido:', req.body) en la terminal?
+RTA: el codigo de estado que recibe es de 201, lo que imprime en la consola es: 
+{
+    "id": 5,
+    "nombre": "Espeleología en la cueva",
+    "tipo": "tierra",
+    "precio": 45000
+}
+
+y en la terminal aparece:
+Body recibido: { nombre: 'Espeleología en la cueva', tipo: 'tierra', precio: 45000 }
+
+
+Predicción P10 — escríbela en tu bitácora ANTES de ejecutar
+Haz cualquier cambio en app.js y guarda (con --watch el servidor se reinicia solo). Vuelve a pedir
+GET /actividades. ¿Sigue estando la actividad que creaste?
+
+RTA: ya no esta la actividad 5 porque como no hya ninguna base de datos cada vez que el
+servidor se actualiza o se apaga, la memoria se limpia por completo y se vuelve a cargar el archivo
+
+
+
+Momento 6 · Cerrar las puertas: el 404 propio
+
+Predicción P11 — escríbela en tu bitácora ANTES de ejecutar
+Mueve este bloque al inicio, justo después de express.json(), y pide GET /actividades. 
+¿Qué pasa? ¿Por qué? Después regrésalo al final.
+
+RTA:Lo que sucede es que aparece esto en la consola:
+{
+    "mensaje": "No existe la ruta GET /actividades"
+}
+Pasa esto porque Express ejecuta todo estrictamente en orden de aparición . Las rutas
+específicas van arriba y el recolector de errores (el 404) va siempre al final.
+
+
+Conclusión para la bitácora
+Escribe en una frase cómo decide Express qué código ejecutar cuando llega una petición. 
+Usa las palabras "orden" y "next".
+
+RTA: la conclucion es que Express procesa las peticiones siguiendo un estricto orden 
+secuencial de arriba hacia abajo, evaluando cada ruta o middleware hasta que uno responde 
+o llama a next para continuar con el siguiente.
