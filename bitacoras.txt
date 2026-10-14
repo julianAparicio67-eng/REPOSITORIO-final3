@@ -1,0 +1,65 @@
+Momento 2 · El mismo servidor con Express
+
+Predicción P4 — escríbela en tu bitácora ANTES de ejecutar
+No has programado ninguna ruta para /no-existe. ¿Qué crees que responde Express si la pides?
+Ábrela en el navegador con las herramientas de desarrollador abiertas (F12 → pestaña
+Red/Network) y mira el código de estado.
+
+RTA:Como no se ha programado una ruta para /no-existe Express no sabe qué hacer con esa petición.
+Asi que devulve un error 404 Not Found. 
+
+
+
+Momento 3 · Ver pasar las peticiones
+
+Predicción P5 — escríbela en tu bitácora ANTES de ejecutar
+Comenta la línea next(); y pide / en el navegador. ¿Qué ves en el navegador? ¿Qué ves en la
+terminal? Cuando termines, vuelve a activar next();.
+
+RTA:En el navegador se ve que se queda cargando... pero en la terminal aparece con normalidad 
+que se ha ingresado. Cuando quito el comentario de next todo vueve a la normalidad.
+
+
+
+Momento 4 · Primeras rutas con datos
+
+Predicción P6 — escríbela en tu bitácora ANTES de ejecutar
+Pides GET /actividades/1. La actividad con id 1 sí existe. ¿Qué código de estado y qué body vas a
+recibir?
+Pista para cuando ejecutes: mira lo que imprime console.log('params:', req.params). ¿El 1
+aparece con comillas o sin comillas?
+
+
+4.1 Una sola actividad: req.params
+
+Predicción P6 — escríbela en tu bitácora ANTES de ejecutar
+Pides GET /actividades/1. La actividad con id 1 sí existe. ¿Qué código de estado y qué body vas a
+recibir?
+Pista para cuando ejecutes: mira lo que imprime console.log('params:', req.params). ¿El 1
+aparece con comillas o sin comillas?
+
+RTA:El codigo de estado es 200 un OK todo bien, pero no de da un body.
+En el console.log el 1 si aparece con comillas '1'.
+
+
+Predicción P7 — escríbela en tu bitácora ANTES de ejecutar
+En la versión corregida, borra la palabra return que está antes de res.status(404) y pide
+/actividades/99. ¿Qué recibe el cliente? ¿Qué aparece en la terminal? Después vuelve a poner el
+return.
+
+RTA:lo que recibe el cliente es: 
+{
+    "mensaje": "No existe la actividad con id 99"
+}
+
+y lo que aparece en la terminal es:
+    3:06:20 p. m. GET /actividades/99
+
+
+4.2 Filtrar: req.query
+
+Predicción P8 — escríbela en tu bitácora ANTES de ejecutar
+Predice el resultado de estas tres peticiones: ?tipo=agua, ?tipo=AGUA y ?tipo=fuego. Para la
+última: ¿debería responder 404 o 200 con una lista vacía? Defiende tu respuesta.
+
+RTA:
